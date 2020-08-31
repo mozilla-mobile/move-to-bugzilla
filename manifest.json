@@ -1,0 +1,24 @@
+{
+  "manifest_version": 2,
+  "name": "Move to Bugzilla.",
+  "version": "1.0",
+  "options_ui": {
+    "page": "options.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://github.com/*"],
+      "run_at": "document_idle",
+      "js": ["add-button.js"]
+    }
+  ],
+  "background": {
+    "scripts": ["background.js"]
+  },
+  "permissions": ["storage"],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "move-to-bugzilla@sferro.dev"
+    }
+  }
+}
