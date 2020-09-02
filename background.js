@@ -74,6 +74,16 @@ async function githubIssueApi({ issue, path = '', data, method = 'GET' }) {
   return result;
 }
 
+function bugzillaDescription(githubData) {
+  // Add ">" to each line.
+  const quote = (githubData.body || "")
+    .split('\n')
+    .map(s => '> ' + s)
+    .join('\n');
+  return `From github: ${githubData.html_url}.\n\n`
+    + `${quote}`;
+}
+
 async function moveToBugzilla(data) {
   const { github, component, product } = data;
 
@@ -98,8 +108,7 @@ async function moveToBugzilla(data) {
     version: "unspecified",
     op_sys: "android",
     summary: githubData.title,
-    description: `From github: ${githubData.html_url}.\n\n`
-      + `> ${githubData.body}`,
+    description: bugzillaDescription(githubData),
   };
 
   // Create bug in Bugzilla first
