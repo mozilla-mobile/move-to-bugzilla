@@ -106,7 +106,7 @@ function init() {
 
   const closeButtonWrapper = closeButton.closest('div');
   // Adds correct spacing
-  closeButtonWrapper.classList.add('ml-1');
+  closeButtonWrapper.style.marginLeft = 'auto';
   closeButtonWrapper.parentNode.insertBefore(container, closeButtonWrapper);
 }
 
