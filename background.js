@@ -8,6 +8,7 @@ async function ensureUser() {
   const { github_key, bugzilla_key } = await browser.storage.local.get();
 
   if (!github_key || !bugzilla_key) {
+    browser.runtime.openOptionsPage();
     throw new Error("Missing keys.");
   }
 
