@@ -84,6 +84,31 @@ function bugzillaDescription(githubData) {
     + `${quote}`;
 }
 
+// These are IDs for GitHub labels that corresponds to a "defect"
+const DEFECT_TYPE_LABEL_IDS = new Set([
+  875862810
+]);
+
+// These are IDs for GitHub labels that corresponds to a "enhancement"
+const ENHANCEMENT_TYPE_LABEL_IDS = new Set([
+  877027717
+]);
+
+function bugzillaType(githubData) {
+  if (!("labels" in githubData)) {
+    return "--";
+  }
+  for (label of githubData.labels) {
+    if (DEFECT_TYPE_LABEL_IDS.has(label.id)) {
+      return "defect";
+    }
+    if (ENHANCEMENT_TYPE_LABEL_IDS.has(label.id)) {
+      return "enhancement";
+    }
+  }
+  return "--";
+}
+
 async function moveToBugzilla(data) {
   const { github, component, product } = data;
 
@@ -103,8 +128,7 @@ async function moveToBugzilla(data) {
     api_key: user.bugzilla_key,
     product,
     component,
-    // TODO: could we get this from github?
-    type: '--',
+    type: bugzillaType(githubData),
     version: "unspecified",
     op_sys: "android",
     summary: githubData.title,
