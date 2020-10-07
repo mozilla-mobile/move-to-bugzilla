@@ -81,7 +81,9 @@ function bugzillaDescription(githubData) {
     .map(s => '> ' + s)
     .join('\n');
   return `From github: ${githubData.html_url}.\n\n`
-    + `${quote}`;
+    + `${quote}\n\n`
+    + `Change performed by the [Move to Bugzilla add-on](`
+    +    `https://addons.mozilla.org/en-US/firefox/addon/move-to-bugzilla/).`;
 }
 
 // These are IDs for GitHub labels that corresponds to a "defect"
@@ -153,7 +155,9 @@ async function moveToBugzilla(data) {
     path: '/comments',
     data: {
       body: `Moved to bugzilla: `
-        + `https://bugzilla.mozilla.org/show_bug.cgi?id=${bugzillaId}`,
+        + `https://bugzilla.mozilla.org/show_bug.cgi?id=${bugzillaId}\n\n`
+        + `Change performed by the [Move to Bugzilla add-on](`
+        +     `https://addons.mozilla.org/en-US/firefox/addon/move-to-bugzilla/).`,
     }
   });
 
