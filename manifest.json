@@ -1,7 +1,11 @@
 {
   "manifest_version": 2,
   "name": "Move to Bugzilla.",
-  "version": "1.0.6",
+  "version": "1.0.7",
+  "icons": {
+    "48": "icons/exchange.svg",
+    "96": "icons/exchange.svg"
+  },
   "options_ui": {
     "page": "options.html"
   },
@@ -9,13 +13,21 @@
     {
       "matches": ["https://github.com/*"],
       "run_at": "document_idle",
-      "js": ["add-button.js"]
+      "js": ["button.js", "add-button.js"]
     }
   ],
   "background": {
     "scripts": ["background.js"]
   },
-  "permissions": ["storage"],
+  "page_action": {
+    "browser_style": true,
+    "default_icon": "icons/exchange.svg",
+    "default_title": "Move To Bugzilla",
+    "default_popup": "move.html",
+    "show_matches": ["https://github.com/*/issues/*"],
+    "hide_matches": ["https://github.com/*/issues"]
+  },
+  "permissions": ["storage", "activeTab"],
   "browser_specific_settings": {
     "gecko": {
       "id": "move-to-bugzilla@sferro.dev"
