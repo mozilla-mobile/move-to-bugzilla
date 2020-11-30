@@ -98,7 +98,7 @@ const ENHANCEMENT_TYPE_LABEL_IDS = new Set([
 
 function bugzillaType(githubData) {
   if (!("labels" in githubData)) {
-    return "--";
+    return "defect";
   }
   for (label of githubData.labels) {
     if (DEFECT_TYPE_LABEL_IDS.has(label.id)) {
@@ -108,7 +108,7 @@ function bugzillaType(githubData) {
       return "enhancement";
     }
   }
-  return "--";
+  return "defect";
 }
 
 async function moveToBugzilla(data) {
@@ -142,7 +142,9 @@ async function moveToBugzilla(data) {
     method: 'POST',
     body: JSON.stringify(bugzillaRequest),
   });
-  const bugzillaId = (await bugzillaResponse.json()).id;
+
+  const response = await bugzillaResponse.json();
+  const bugzillaId = response.id;
 
   if (!bugzillaId) {
     throw new Error("Could not create bugzilla bug.");
