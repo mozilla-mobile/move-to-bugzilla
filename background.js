@@ -65,11 +65,11 @@ async function githubIssueApi({ issue, path = '', data, method = 'GET' }) {
     request
   );
 
-  const result = await response.json();
-
-  if (!(await response).ok) {
-    throw new Error(result);
+  if (!response.ok) {
+    throw new Error(await response.text());
   }
+
+  const result = await response.json();
 
   return result;
 }
