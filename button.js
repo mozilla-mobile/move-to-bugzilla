@@ -40,7 +40,7 @@ function createDropdown(container, button) {
   defaultOption.value = '';
   componentDropdown.appendChild(defaultOption);
 
-  const products = ["--", "Fenix", "Focus", "Core", "GeckoView", "WebExtensions"];
+  const products = ["--", "Core", "Fenix", "Focus", "GeckoView", "Testing", "WebExtensions"];
   for (product of products) {
     const option = document.createElement('option');
     option.innerText = product;
