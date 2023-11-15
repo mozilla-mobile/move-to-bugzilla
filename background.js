@@ -66,7 +66,7 @@ async function githubIssueApi({ issue, path = '', data, method = 'GET' }) {
   );
 
   if (!response.ok) {
-    throw new Error(await response.text());
+    throw new Error(`Github request failed: ${JSON.stringify(result)}`);
   }
 
   const result = await response.json();
@@ -112,7 +112,7 @@ function bugzillaType(githubData) {
 }
 
 async function moveToBugzilla(data) {
-  const { github, component, product } = data;
+  const { github, component, product, opSys, severity, priority, bugType } = data;
 
   const user = await ensureUser();
 
@@ -126,13 +126,16 @@ async function moveToBugzilla(data) {
     issue
   });
 
-  const bugzillaRequest = {
+  let bugzillaRequest = {
     api_key: user.bugzilla_key,
     product,
     component,
-    type: bugzillaType(githubData),
+    type: bugType || bugzillaType(githubData),
     version: "unspecified",
-    op_sys: "android",
+    op_sys: opSys,
+    platform: "unspecified",
+    severity,
+    priority,
     summary: githubData.title,
     description: bugzillaDescription(githubData),
   };
@@ -147,7 +150,7 @@ async function moveToBugzilla(data) {
   const bugzillaId = response.id;
 
   if (!bugzillaId) {
-    throw new Error("Could not create bugzilla bug.");
+    throw new Error(`Could not create bugzilla bug: ${JSON.stringify(response)}`);
   }
 
   // Add comment
