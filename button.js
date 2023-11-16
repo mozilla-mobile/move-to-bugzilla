@@ -44,7 +44,7 @@ function createDropdown(container, button) {
   defaultOption.value = '';
   componentDropdown.appendChild(defaultOption);
 
-  const products = ["--", "Application Services", "Fenix", "Focus", "Core", "GeckoView", "WebExtensions"];
+  const products = ["--", "Application Services", "Core", "Fenix", "Focus", "GeckoView", "Testing", "WebExtensions"];
   for (product of products) {
     const option = document.createElement('option');
     option.innerText = product;
@@ -88,14 +88,14 @@ function createDropdown(container, button) {
   }
 
   priorityDropdown = document.createElement('select');
-  for (severity of ["P3", "P1", "P2", "P4", "P5"]) {
+  for (severity of ["P3", "P1", "P2", "P5"]) {
     const option = document.createElement('option');
     option.innerText = option.value = severity;
     priorityDropdown.appendChild(option);
   }
 
   typeDropdown = document.createElement('select');
-  for (t of ["(use github labels)", "defect", "enhancement"]) {
+  for (t of ["(use github labels)", "defect", "enhancement", "task"]) {
     const option = document.createElement('option');
     option.innerText = t;
     if (t.charAt(0) != "(") {

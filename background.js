@@ -66,7 +66,7 @@ async function githubIssueApi({ issue, path = '', data, method = 'GET' }) {
   );
 
   if (!response.ok) {
-    throw new Error(`Github request failed: ${JSON.stringify(result)}`);
+    throw new Error(`Github request failed: ${await response.text()}`);
   }
 
   const result = await response.json();
@@ -126,7 +126,7 @@ async function moveToBugzilla(data) {
     issue
   });
 
-  let bugzillaRequest = {
+  const bugzillaRequest = {
     api_key: user.bugzilla_key,
     product,
     component,
