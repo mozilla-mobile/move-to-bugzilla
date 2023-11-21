@@ -24,15 +24,19 @@ function issueInfo(pathname) {
 let issue = null;
 let containerDropdown;
 let productDropdown;
+let severityDropdown;
+let priorityDropdown;
+let typeDropdown;
+let opSysDropdown;
+
+let allDropdowns; // Will be an array of all dropdowns in the order they should be shown.
 
 function createDropdown(container, button) {
   productDropdown = document.createElement('select');
   productDropdown.style.marginRight = '10px';
-  productDropdown.style.display = 'none';
 
   componentDropdown = document.createElement('select');
   componentDropdown.style.marginRight = '10px';
-  componentDropdown.style.display = 'none';
   componentDropdown.disabled = true;
 
   const defaultOption = document.createElement('option');
@@ -40,8 +44,7 @@ function createDropdown(container, button) {
   defaultOption.value = '';
   componentDropdown.appendChild(defaultOption);
 
-  const products = ["--", "Core", "Fenix", "Focus", "GeckoView", "Testing", "WebExtensions"];
-
+  const products = ["--", "Application Services", "Core", "Fenix", "Focus", "GeckoView", "Testing", "WebExtensions"];
   for (product of products) {
     const option = document.createElement('option');
     option.innerText = product;
@@ -69,6 +72,38 @@ function createDropdown(container, button) {
     componentDropdown.disabled = false;
   });
 
+  opSysDropdown = document.createElement('select');
+  for (op_sys of ["", "Android", "iOS"]) {
+    const option = document.createElement('option');
+    option.innerText = op_sys || "--"
+    option.value = op_sys;
+    opSysDropdown.appendChild(option);
+  }
+
+  severityDropdown = document.createElement('select');
+  for (severity of ["S3", "S1", "S2", "S4", "S5"]) {
+    const option = document.createElement('option');
+    option.innerText = option.value = severity;
+    severityDropdown.appendChild(option);
+  }
+
+  priorityDropdown = document.createElement('select');
+  for (severity of ["P3", "P1", "P2", "P5"]) {
+    const option = document.createElement('option');
+    option.innerText = option.value = severity;
+    priorityDropdown.appendChild(option);
+  }
+
+  typeDropdown = document.createElement('select');
+  for (t of ["(use github labels)", "defect", "enhancement", "task"]) {
+    const option = document.createElement('option');
+    option.innerText = t;
+    if (t.charAt(0) != "(") {
+      option.value = t;
+    }
+    typeDropdown.appendChild(option);
+  }
+
   const enableButton = () => {
     if (productDropdown.value && componentDropdown.value) {
       button.disabled = false;
@@ -80,8 +115,11 @@ function createDropdown(container, button) {
   productDropdown.addEventListener('change', enableButton);
   componentDropdown.addEventListener('change', enableButton);
 
-  container.appendChild(productDropdown);
-  container.appendChild(componentDropdown);
+  allDropdowns = [productDropdown, componentDropdown, severityDropdown, priorityDropdown, typeDropdown, opSysDropdown];
+  for (dropdown of allDropdowns) {
+    dropdown.style.display = 'none';
+    container.appendChild(dropdown);
+  }
 }
 
 async function addButton(wrapper, pathname, expand = false) {
@@ -120,14 +158,24 @@ async function moveToBugzilla(target) {
   const product = productDropdown.value;
 
   if (!component || !product) {
-    componentDropdown.style.display = 'initial';
-    productDropdown.style.display = 'initial';
+    for (dropdown of allDropdowns) {
+      dropdown.style.display = 'initial';
+    }
   } else {
-    browser.runtime.sendMessage({
+      const severity = severityDropdown.value;
+      const priority = priorityDropdown.value;
+      const opSys = opSysDropdown.value || "unspecified";
+      const bugType = typeDropdown.value || undefined;
+
+      browser.runtime.sendMessage({
       type: "move-to-bugzilla",
       github: issue,
       component,
       product,
+      opSys,
+      severity,
+      priority,
+      bugType,
     });
   }
   target.disabled = true;
